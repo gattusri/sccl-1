@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +14,9 @@ import com.ants.sccl.model.DumperData;
 import com.ants.sccl.model.DumperTransaction;
 @Repository
 @Transactional
+@Component
 public interface DumperRepository extends JpaRepository<DumperData, String> {
+	
 	
 	@Query(value="select * from dumper_transaction where dumper_id=?1 and load_device_value=?2 and status=?3",nativeQuery = true)
 	Optional<?> existsByDumperId(String dumperId,String deviceId,String status);

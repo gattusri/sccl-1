@@ -1,4 +1,4 @@
-package com.ants.sccl.service;
+package com.ants.sccl.serviceimpl;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -14,12 +14,14 @@ import com.ants.sccl.model.DumperData;
 import com.ants.sccl.model.DumperTransaction;
 import com.ants.sccl.repository.DumperRepository;
 import com.ants.sccl.repository.DumperTransactionrepositery;
+import com.ants.sccl.service.DumperService;
 @Component
 @Service
 public class DumperServiceImpl implements DumperService {
 	
 	@Autowired
 	DumperRepository dumperRepositery;
+	
 	@Autowired
 	DumperData dumperdata;
 	
