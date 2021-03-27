@@ -214,4 +214,14 @@ public class Device {
 		this.point_of_loading_unloading = point_of_loading_unloading;
 	}
 
+	@Override
+	public String toString() {
+		return "Device [id=" + id + ", deviceId=" + deviceId + ", time_stamp=" + time_stamp + ", ble_status="
+				+ ble_status + ", ble_pair_id=" + ble_pair_id + ", ignition_status=" + ignition_status + ", engine_rpm="
+				+ engine_rpm + ", engine_temp1=" + engine_temp1 + ", engine_temp2=" + engine_temp2 + ", fuel_level="
+				+ fuel_level + ", sys_volt=" + sys_volt + ", bat_olt=" + bat_olt + ", latitude=" + latitude
+				+ ", longitude=" + longitude + ", sw_ver=" + sw_ver + ", type_of_Load_or_unload="
+				+ type_of_Load_or_unload + ", point_of_loading_unloading=" + point_of_loading_unloading + "]";
+	}
+
 }

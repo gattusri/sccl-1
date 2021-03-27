@@ -89,6 +89,13 @@ public class LiveLocation {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	@Override
+	public String toString() {
+		return "LiveLocation [id=" + id + ", deviceId=" + deviceId + ", time_stamp=" + time_stamp + ", latitude="
+				+ latitude + ", longitude=" + longitude + ", status=" + status + "]";
+	}
+	
 	
 	
 	
