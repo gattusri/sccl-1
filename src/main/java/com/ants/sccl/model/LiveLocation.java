@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Component
 public class LiveLocation {
 	@Id
-	@Column(name="Id")
+	@Column(name="`Id`")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private BigInteger id;
 

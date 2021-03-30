@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 public class Device {
 	
 	@Id
-	@Column(name="Id")
+	@Column(name="`Id`")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private BigInteger id;
 
