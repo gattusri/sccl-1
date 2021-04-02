@@ -1,27 +1,34 @@
 package com.ants.sccl.controller;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ants.sccl.model.Asset;
+import com.ants.sccl.model.AssetCount;
 import com.ants.sccl.model.AssetLocations;
 import com.ants.sccl.model.AssetRegister;
 import com.ants.sccl.model.Device;
 import com.ants.sccl.model.LiveLocation;
+import com.ants.sccl.model.UserDetails;
 import com.ants.sccl.repository.AssetLocationsRepository;
 import com.ants.sccl.repository.AssetRegisterRepository;
 import com.ants.sccl.repository.AssetRepository;
 import com.ants.sccl.repository.DumperRepository;
 import com.ants.sccl.repository.LiveLocationRepository;
+import com.ants.sccl.repository.UserDetailsRepository;
 import com.ants.sccl.response.IoTResponse;
 import com.ants.sccl.response.MessageResponse;
+import com.ants.sccl.response.ResponseObject;
 import com.ants.sccl.serviceimpl.DeviceServiceImpl;
 import com.ants.sccl.serviceimpl.DumperServiceImpl;
 
@@ -38,6 +45,7 @@ public class DeviceController {
 	@Autowired
 	DumperServiceImpl dumperServiceImpl;
 	
+	
 	@Autowired
 	LiveLocationRepository livelocationrepositery;
 	
@@ -49,6 +57,11 @@ public class DeviceController {
 	
 	@Autowired
 	AssetRegisterRepository assetRegisterRepository;
+	
+	
+	@Autowired
+	UserDetailsRepository userDetailsRepository;
+
 	
 //	@Autowired
 //	LocationForAssetRepository locationForAssetRepository;
@@ -126,53 +139,79 @@ public class DeviceController {
 	// Asset tracking API
 	@PostMapping("/assettracking")
 	public ResponseEntity<?> assetTracking1(@RequestBody Asset asset) {
-		System.out.println(asset.toString()+"------");
-			Asset res = assetRepository.save(asset);
-			System.out.println(res.toString()+"-----");
+//		System.out.println(!asset.getAssetCode().trim().isBlank());
+		if(asset.getAssetCode()!=null) {
+	
+				Asset res = assetRepository.save(asset);
 				
-		
-			AssetLocations assetLocations = assetLocationRepository.getLocationBasedOnParameters(res.getrFIDReaderCode(),res.getcH_Antenna(),res.getSubch());
-			
-			//Optional<LocationsForAsset> lfar=locationForAssetRepository.getLocation(res.getrFIDReaderCode(),res.getcH_Antenna(),res.getSubch());
-				
-			
-			System.out.println(assetLocations.getLocationId()+"---location id getting");
-			System.out.println(res.getAssetCode()+"------assetcode");
-				//lfar.get().getLocationID()
-
 				Optional<AssetRegister> aRegister =assetRegisterRepository.getAssetBasedonAssetCode(res.getAssetCode());
-				
-				System.out.println(aRegister.get().toString()+"---asset register object");
-				System.out.println("----------------------");
-				System.out.println("");
 			
 				if(aRegister.isPresent()) {
-				AssetRegister aRegisterOne=aRegister.get();
-					aRegisterOne.setLocationId(assetLocations.getLocationId());
-					assetRegisterRepository.save(aRegisterOne);
-					System.out.println("---asset IF Condition check");
-				}
-				System.out.println("----------------------");
-				
-			if(res.getAssetCode()!=null) {
-				System.out.println("if condition+ ----");
-			return  ResponseEntity.status(HttpStatus.OK).body(res);
+						AssetLocations assetLocations = assetLocationRepository.getLocationBasedOnParameters(res.getrFIDReaderCode(),res.getcH_Antenna(),res.getSubch());
+						AssetRegister aRegisterOne=aRegister.get();
+						aRegisterOne.setLocationId(assetLocations.getLocationId());
+						assetRegisterRepository.save(aRegisterOne);
+					}
+												
+			return  ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("200","Success"));
 		
-			}
+		}
 			else 	{
 				System.out.println("else condition+ ----");
-				return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+				return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("201","UnSuccess"));
 			}
 	}
 	
-//	@GetMapping("/getdetails")
-//	public  ResponseEntity<?>  device() {
-//		//System.out.println(device.toString()+"----");
-//		IoTResponse it=deviceServiceImpl.saveDeviceData(device);
-//			//return  ResponseEntity.status(HttpStatus.OK).body(new IoTResponse(it.getStatus(),it.getIgnition_status(),it.getSw_ver()));
-//			return  ResponseEntity.status(HttpStatus.OK).body(it);
-//	}
+	@GetMapping("/getlocations")
+	public  ResponseEntity<?>  getLocations() {
+		//System.out.println(device.toString()+"----");
+			List<AssetLocations> locationsList= assetLocationRepository.findAll();
+			//return  ResponseEntity.status(HttpStatus.OK).body(new IoTResponse(it.getStatus(),it.getIgnition_status(),it.getSw_ver()));
+			return  ResponseEntity.status(HttpStatus.OK).body(locationsList);
+	}
 	
+	@PostMapping("/getassets")
+	public  ResponseEntity<?>  getAssetBasedOnLocation(@RequestBody AssetLocations assetLocations) {
+			List<AssetRegister> assetList=assetRegisterRepository.getAssetBasedonLocation(assetLocations.getLocationId());
+			//return  ResponseEntity.status(HttpStatus.OK).body(new IoTResponse(it.getStatus(),it.getIgnition_status(),it.getSw_ver()));
+			return  ResponseEntity.status(HttpStatus.OK).body(assetList);
+	}
 	
+	@GetMapping("/getdevicecount")
+	public  ResponseEntity<?>  getDeviceCount() {
+			ArrayList<AssetCount> assetsList=(ArrayList<AssetCount>) assetRegisterRepository.getAssetCountBasedonLocationId();
+			return  ResponseEntity.status(HttpStatus.OK).body(assetsList);
+	}
 	
+	@PostMapping("/login")
+	public  ResponseEntity<?>  loginCheck(@RequestBody UserDetails userDetails) {
+		try {
+		if(userDetails!=null) {
+		  Optional<UserDetails> userObject=userDetailsRepository.getUserDetailsBasedOnEmail(userDetails.getUserEmail());
+			
+		  if(userDetails.getUserEmail().equalsIgnoreCase(userObject.get().getUserEmail())) {
+			  if(userDetails.getUserPassword().equals(userObject.get().getUserPassword()) && userObject.get().getIsActive()==1){
+				  userObject.get().setUserPassword("********");
+				  return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","Login Succes",userObject));
+			 
+		  }
+			  else {
+				  userObject.get().setUserPassword("********");
+				 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid Password / User not Active",userObject));
+			  }
+		  }else {
+			  userObject.get().setUserPassword("********");
+			  return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid User EmailId",userObject));
+		  }
+		  //return  ResponseEntity.status(HttpStatus.OK).body(new IoTResponse(it.getStatus(),it.getIgnition_status(),it.getSw_ver()));
+		//	return  ResponseEntity.status(HttpStatus.OK).body();
+		}else {
+				userDetails.setUserPassword("********");
+			  return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid User Details",userDetails));
+		}
+	}catch (Exception e) {
+			userDetails.setUserPassword("********");
+		  return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid User Details",userDetails));
+		}
+	}
 	}
