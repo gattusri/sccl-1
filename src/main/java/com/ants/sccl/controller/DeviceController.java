@@ -123,25 +123,49 @@ public class DeviceController {
 	
 	@PostMapping("/dumperLiveLocation")
 	public  ResponseEntity<?>  dumperLiveLocation(@RequestBody String dumperId) {
-		System.out.println(dumperId+"----");
+		//System.out.println(dumperId+"----");
 			Optional<LiveLocation> dumperll=livelocationrepositery.checkLiveLocationExistOrNot(dumperId);
 			if(dumperll.isPresent()) {
-				System.out.println("if condition+ ----");
+				//System.out.println("if condition+ ----");
 			return  ResponseEntity.status(HttpStatus.OK).body(dumperll);
 		
 			}
 			else 	{
 				System.out.println("else condition+ ----");
-			
 				return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid DumperId",dumperll));
 			}
 	}
+	
+	/** Dumper Trip Count API */
+	
+	@PostMapping("/trip")
+	public  ResponseEntity<?>  dumperCount(@RequestBody String dumperId) {
+		//System.out.println(dumperId+"----");
+			Optional<LiveLocation> dumperll=livelocationrepositery.checkLiveLocationExistOrNot(dumperId);
+			if(dumperll.isPresent()) {
+				//System.out.println("if condition+ ----");
+			return  ResponseEntity.status(HttpStatus.OK).body(dumperll);
+		
+			}
+			else 	{
+				System.out.println("else condition+ ----");
+				return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid DumperId",dumperll));
+			}
+	}
+	
+	
+	
+	
+	
+	
+	
 	// Asset tracking API
 	@PostMapping("/assettracking")
 	public ResponseEntity<?> assetTracking1(@RequestBody Asset asset) {
 //		System.out.println(!asset.getAssetCode().trim().isBlank());
+		try {
 		if(asset.getAssetCode()!=null) {
-	
+			//System.out.print(asset.getTimeStamp()+"------------");
 				Asset res = assetRepository.save(asset);
 				
 				Optional<AssetRegister> aRegister =assetRegisterRepository.getAssetBasedonAssetCode(res.getAssetCode());
@@ -157,9 +181,12 @@ public class DeviceController {
 		
 		}
 			else 	{
-				System.out.println("else condition+ ----");
+//				System.out.println("else condition+ ----");
 				return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("201","UnSuccess"));
 			}
+		}catch (Exception e) {
+			return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("201","UnSuccess"));
+		}
 	}
 	
 	@GetMapping("/getlocations")
@@ -176,6 +203,15 @@ public class DeviceController {
 			//return  ResponseEntity.status(HttpStatus.OK).body(new IoTResponse(it.getStatus(),it.getIgnition_status(),it.getSw_ver()));
 			return  ResponseEntity.status(HttpStatus.OK).body(assetList);
 	}
+	
+	
+	@GetMapping("/gettest")
+	public  ResponseEntity<?>  getAsset() {
+			List<Asset> assetList=assetRepository.getAsset();
+			//return  ResponseEntity.status(HttpStatus.OK).body(new IoTResponse(it.getStatus(),it.getIgnition_status(),it.getSw_ver()));
+			return  ResponseEntity.status(HttpStatus.OK).body(assetList);
+	}
+	
 	
 	@GetMapping("/getdevicecount")
 	public  ResponseEntity<?>  getDeviceCount() {

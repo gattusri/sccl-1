@@ -34,7 +34,9 @@ public class DeviceServiceImpl implements DeviceService{
 	
 	@Override
 	public IoTResponse saveDeviceData(Device device) {
+		
 		IoTResponse iotresponse=new IoTResponse();
+		try {
 					devi=new Device();
 					devi.setBat_olt(device.getBat_olt());
 					devi.setBle_pair_id(device.getBle_pair_id());
@@ -55,7 +57,13 @@ public class DeviceServiceImpl implements DeviceService{
 					devi.setSw_ver(device.getSw_ver());
 		
 				devicerepository.save(devi);
-				
+		}catch(Exception E) {
+			iotresponse.setStatus("No");
+			iotresponse.setIgnition_status(devi.getIgnition_status());
+			iotresponse.setSw_ver("V"+devi.getSw_ver());
+			return iotresponse;
+		}
+		try {
 					Optional<LiveLocation> ll=liveLocationRepository.checkLiveLocationExistOrNot(device.getDeviceId());
 					if(ll.isPresent()) {
 						//ll.get().setDeviceId(device.getDeviceId());
@@ -65,7 +73,7 @@ public class DeviceServiceImpl implements DeviceService{
 						//if("Dumper")
 						//ll.get().setStatus("No-data");
 						liveLocationRepository.save(ll.get());
-						System.out.println(ll.get().toString()+"if condition");
+						//System.out.println(ll.get().toString()+"if condition");
 						
 					}else {
 						System.out.println(liveLocation+"else condition 1");
@@ -75,12 +83,14 @@ public class DeviceServiceImpl implements DeviceService{
 					liveLocation.setTime_stamp(device.getTime_stamp());
 					liveLocation.setStatus("No-data");
 					liveLocationRepository.save(liveLocation);	 
-					System.out.println(liveLocation.toString()+"else condition 2");
+					//System.out.println(liveLocation.toString()+"else condition 2");
 					}
-				
+		}catch (Exception e) {
+			System.out.println("Issue in updating live location."+ e);
+		}
 				
 		if(devi.getDeviceId().equalsIgnoreCase(device.getDeviceId())) {
-			System.out.println(device.toString()+"---");
+			//System.out.println(device.toString()+"---");
 			iotresponse.setStatus("Ok");
 			iotresponse.setIgnition_status(devi.getIgnition_status());
 			iotresponse.setSw_ver("V"+devi.getSw_ver());

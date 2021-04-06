@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-@Table(name="`Raw_Data`")
+@Table(name="`Dumper_Raw_Data`")
 @Component
 public class Device {
 	
@@ -30,7 +30,7 @@ public class Device {
 	private String deviceId;
 	
 
-	@DateTimeFormat(iso = ISO.DATE_TIME)
+	//@DateTimeFormat(iso = ISO.DATE_TIME)
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name="Date_Time")
 	private Timestamp time_stamp;

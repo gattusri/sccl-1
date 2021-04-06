@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-@Table(name="live_location")
+@Table(name="Dumper_Live_Location")
 @Entity
 @Component
 public class LiveLocation {
