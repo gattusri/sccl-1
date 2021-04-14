@@ -16,52 +16,52 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Component
 public class DumperCount {
 
-	private String dumper_ID; 
+	private String deviceId; 
 	
-	private String bluetooth_device_ID;
+	private String ble_pair_id;
 	
 	@DateTimeFormat(iso = ISO.DATE_TIME)
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Timestamp timeStamp;
+	private Timestamp time_stamp;
 	
-	private byte status;
+	private byte ble_status;
 
-	public String getDumper_ID() {
-		return dumper_ID;
+	public String getDeviceId() {
+		return deviceId;
 	}
 
-	public void setDumper_ID(String dumper_ID) {
-		this.dumper_ID = dumper_ID;
+	public void setDeviceId(String deviceId) {
+		this.deviceId = deviceId;
 	}
 
-	public String getBluetooth_device_ID() {
-		return bluetooth_device_ID;
+	public String getBle_pair_id() {
+		return ble_pair_id;
 	}
 
-	public void setBluetooth_device_ID(String bluetooth_device_ID) {
-		this.bluetooth_device_ID = bluetooth_device_ID;
+	public void setBle_pair_id(String ble_pair_id) {
+		this.ble_pair_id = ble_pair_id;
 	}
 
-	public Timestamp getTimeStamp() {
-		return timeStamp;
+	public Timestamp getTime_stamp() {
+		return time_stamp;
 	}
 
-	public void setTimeStamp(Timestamp timeStamp) {
-		this.timeStamp = timeStamp;
+	public void setTime_stamp(Timestamp time_stamp) {
+		this.time_stamp = time_stamp;
 	}
 
-	public byte getStatus() {
-		return status;
+	public byte getBle_status() {
+		return ble_status;
 	}
 
-	public void setStatus(byte status) {
-		this.status = status;
+	public void setBle_status(byte ble_status) {
+		this.ble_status = ble_status;
 	}
 
 	@Override
 	public String toString() {
-		return "DumperCount [dumper_ID=" + dumper_ID + ", bluetooth_device_ID=" + bluetooth_device_ID + ", timeStamp="
-				+ timeStamp + ", status=" + status + "]";
+		return "DumperCount [deviceId=" + deviceId + ", ble_pair_id=" + ble_pair_id + ", time_stamp=" + time_stamp
+				+ ", ble_status=" + ble_status + "]";
 	}
 	
 }

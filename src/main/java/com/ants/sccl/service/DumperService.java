@@ -12,7 +12,7 @@ public interface DumperService {
 	public void dumperIdWithLoader(String dumperId, String bluetoothValue, Timestamp dateTime);
 	public void dumperIdWithunLoader(String dumperId, String bluetoothValue, Timestamp dateTime);
 	public void dumperIdWithNodevice(String dumperId);
-	void checkWithDumperShovel(DumperCount dumperCount);
-	void checkWithDumperUnload(DumperCount dumperCount);
+	boolean checkWithDumperShovel(DumperCount dumperCount);
+	boolean checkWithDumperUnload(DumperCount dumperCount);
 	
 }

@@ -1,15 +1,24 @@
 package com.ants.sccl.serviceimpl;
 
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.ants.sccl.model.Dashboard;
 import com.ants.sccl.model.Device;
+import com.ants.sccl.model.DeviceMapping;
+import com.ants.sccl.model.DumperTransaction;
 import com.ants.sccl.model.LiveData;
 import com.ants.sccl.model.LiveLocation;
+import com.ants.sccl.repository.DeviceMappingRepository;
 import com.ants.sccl.repository.DeviceRepository;
+import com.ants.sccl.repository.DumperTransactionrepositery;
 import com.ants.sccl.repository.LiveLocationRepository;
 import com.ants.sccl.response.IoTResponse;
 import com.ants.sccl.service.DeviceService;
@@ -26,9 +35,11 @@ public class DeviceServiceImpl implements DeviceService{
 	LiveLocationRepository liveLocationRepository;
 	
 	@Autowired
-	LiveLocation liveLocation;
+	DeviceMappingRepository deviceMappingRepository;
 	
-
+	@Autowired
+	DumperTransactionrepositery dumpertransactionRepositery;
+	
 	@Autowired
 	Device devi;
 	
@@ -76,14 +87,27 @@ public class DeviceServiceImpl implements DeviceService{
 						//System.out.println(ll.get().toString()+"if condition");
 						
 					}else {
-						System.out.println(liveLocation+"else condition 1");
+						DeviceMapping dm=deviceMappingRepository.getOne(device.getDeviceId());
+						if(dm!=null && dm.getDeviceCategory().equalsIgnoreCase("Dumper")) {
+						LiveLocation liveLocation=new LiveLocation();
+						//System.out.println(liveLocation+"else condition 1");
 					liveLocation.setDeviceId(device.getDeviceId());
 					liveLocation.setLatitude(device.getLatitude());
 					liveLocation.setLongitude(device.getLongitude());
 					liveLocation.setTime_stamp(device.getTime_stamp());
-					liveLocation.setStatus("No-data");
+					if(device.getBle_pair_id()=="")
+						liveLocation.setStatus("In Transist");
+					else {
+					DeviceMapping dm1=deviceMappingRepository.getOne(device.getBle_pair_id());
+					if(dm1.getDeviceCategory().equalsIgnoreCase("Shovel"))
+						liveLocation.setStatus("Loading");
+					else if(dm1.getDeviceCategory().equalsIgnoreCase("Unloading"))
+						liveLocation.setStatus("Unloading");
+				
+					}
 					liveLocationRepository.save(liveLocation);	 
 					//System.out.println(liveLocation.toString()+"else condition 2");
+						}
 					}
 		}catch (Exception e) {
 			System.out.println("Issue in updating live location."+ e);
@@ -104,6 +128,21 @@ public class DeviceServiceImpl implements DeviceService{
 		}
 		
 	}
+
+	@Override
+	public ArrayList<Dashboard> getThreeData(Date fromDate, Date toDate) {
+		//System.out.println("deviceServiceimpl calling working"+fromDate+"---"+toDate);
+		ArrayList<Dashboard> op=(ArrayList<Dashboard>) dumpertransactionRepositery.getDataWithFromDateToDate(fromDate, toDate);
+		return op;
+	}
+
+	public List<DumperTransaction> getRecentTripsData() {
+		System.out.println("------");
+		List<DumperTransaction> dumperTransaction=(List<DumperTransaction>) dumpertransactionRepositery.getRecentTrips();
+//		System.out.println(dumperTransaction+"------");
+		return dumperTransaction;
+	}
+	
 	
 	
 }

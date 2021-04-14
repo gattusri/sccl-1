@@ -1,5 +1,6 @@
 package com.ants.sccl.controller;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,18 +12,24 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ants.sccl.model.Asset;
 import com.ants.sccl.model.AssetCount;
 import com.ants.sccl.model.AssetLocations;
 import com.ants.sccl.model.AssetRegister;
+import com.ants.sccl.model.Dashboard;
 import com.ants.sccl.model.Device;
+import com.ants.sccl.model.DeviceMapping;
+import com.ants.sccl.model.DumperCount;
+import com.ants.sccl.model.DumperTransaction;
 import com.ants.sccl.model.LiveLocation;
 import com.ants.sccl.model.UserDetails;
 import com.ants.sccl.repository.AssetLocationsRepository;
 import com.ants.sccl.repository.AssetRegisterRepository;
 import com.ants.sccl.repository.AssetRepository;
+import com.ants.sccl.repository.DeviceMappingRepository;
 import com.ants.sccl.repository.DumperRepository;
 import com.ants.sccl.repository.LiveLocationRepository;
 import com.ants.sccl.repository.UserDetailsRepository;
@@ -62,6 +69,10 @@ public class DeviceController {
 	@Autowired
 	UserDetailsRepository userDetailsRepository;
 
+	@Autowired
+	DeviceMappingRepository deviceMappingRepository;
+	
+	
 	
 //	@Autowired
 //	LocationForAssetRepository locationForAssetRepository;
@@ -98,28 +109,50 @@ public class DeviceController {
 //	}
 //	
 //	
-//	@PostMapping("/dumperone")
-//	public void DumperSecondAPI(@RequestBody DumperCount dumperCount ) {
-//		System.out.println(dumperCount.toString()+"----");
-//		if(dumperCount.getBluetooth_device_ID().equalsIgnoreCase("S1") || dumperCount.getBluetooth_device_ID().equalsIgnoreCase("S2") ||dumperCount.getBluetooth_device_ID().equalsIgnoreCase("S3"))
-//			{ 	 System.out.println(dumperCount.toString()+"--S1--");
-//			dumperServiceImpl.checkWithDumperShovel(dumperCount);
-//			}
-//		if(dumperCount.getBluetooth_device_ID().equalsIgnoreCase("U1") || dumperCount.getBluetooth_device_ID().equalsIgnoreCase("U2") ||dumperCount.getBluetooth_device_ID().equalsIgnoreCase("U3"))
-//			{dumperServiceImpl.checkWithDumperUnload(dumperCount);
-//				System.out.println(dumperCount.toString()+"--U1--");
-//			}
-//		
-//	}
-	
-		//	Master API's
+	/**	Master API for store dumper Raw Data  */
 	@PostMapping("/adddevicedetails")
 	public  ResponseEntity<?>  dumper(@RequestBody Device device) {
 		//System.out.println(device.toString()+"----");
 		IoTResponse it=deviceServiceImpl.saveDeviceData(device);
+				
 			//return  ResponseEntity.status(HttpStatus.OK).body(new IoTResponse(it.getStatus(),it.getIgnition_status(),it.getSw_ver()));
 			return  ResponseEntity.status(HttpStatus.OK).body(it);
 	}
+	
+	
+	
+	/**	API for store dumper trip count  */
+	@PostMapping("/tripcount")
+	public  ResponseEntity<?>  tripCount(@RequestBody DumperCount dumperCount) {
+		//System.out.println(dumperCount.getBle_pair_id()+"-----------");
+		boolean flag=false;
+		try {
+			 DeviceMapping dm=	deviceMappingRepository.getOne(dumperCount.getBle_pair_id());
+			 //System.out.println(dm.getDeviceCategory()+"-----------");
+			
+			 if(dm.getDeviceCategory()!=null) {
+					//System.out.println(dumperCount.toString()+"----");
+					if(dm.getDeviceCategory().equalsIgnoreCase("Shovel"))
+						{ 	 //System.out.println(dumperCount.toString()+"--S1--");
+						 flag=dumperServiceImpl.checkWithDumperShovel(dumperCount);
+						}
+					if(dm.getDeviceCategory().equalsIgnoreCase("Unloading") )
+						{	flag=dumperServiceImpl.checkWithDumperUnload(dumperCount);
+							//System.out.println(dumperCount.toString()+"--U1--");
+						}
+			 }else {
+				 return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("201","UnSuccess"));
+			 }
+			 
+		}catch (Exception e) {
+			return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("201","UnSuccess"));
+		}
+		if(flag)
+			return  ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("200","Success"));
+		else
+			return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ResponseObject("201","UnSuccess"));
+	}
+	
 	
 	@PostMapping("/dumperLiveLocation")
 	public  ResponseEntity<?>  dumperLiveLocation(@RequestBody String dumperId) {
@@ -250,4 +283,35 @@ public class DeviceController {
 		  return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid User Details",userDetails));
 		}
 	}
+	
+	/** API for getting dumper_Count, shovel_Count , trip_Count in DashBoard */
+	@PostMapping("/dashboard")
+	//public  ResponseEntity<?>  getShovalDumperTrips(@RequestParam(name = "fromDate")Date fromDate,@RequestParam(name = "toDate")Date toDate) {
+		public  ResponseEntity<?>  getShovalDumperTrips(@RequestBody Dashboard dashBoard) {
+		//System.out.println("API Calling working");
+		if(dashBoard.getFromDate()==null || dashBoard.getToDate()==null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid Date",dashBoard)) ;
+		}else {
+		try {
+		ArrayList<Dashboard> db=deviceServiceImpl.getThreeData(dashBoard.getFromDate(), dashBoard.getToDate());
+			return ResponseEntity.status(HttpStatus.OK).body(db) ;
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(dashBoard) ;
+			}
+			}
+		}
+	
+	/** API for getting dumper_Count, shovel_Count , trip_Count in DashBoard */
+		@GetMapping("/recenttrips")
+		public  ResponseEntity<?>  getRecentTrips() {
+		try {
+		List<DumperTransaction> recentTripsData = deviceServiceImpl.getRecentTripsData();
+			return ResponseEntity.status(HttpStatus.OK).body(recentTripsData) ;
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid ",e)) ;
+			}
+		
+		}
+	
+	
 	}

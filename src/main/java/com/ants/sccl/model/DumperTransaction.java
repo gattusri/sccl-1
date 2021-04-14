@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import org.springframework.stereotype.Component;
 
 @Entity
-@Table(name="`dumper_transaction`")
+@Table(name="`Dumper_Transaction`")
 @Component
 public class DumperTransaction {
 	

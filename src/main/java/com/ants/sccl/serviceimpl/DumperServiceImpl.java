@@ -106,45 +106,58 @@ public class DumperServiceImpl implements DumperService {
 	}
 
 	@Override
-	public void checkWithDumperShovel(DumperCount dumperCount) {
-		Optional<DumperTransaction> dtrans =dumpertransactionRepositery.checkWithDumperShovelRecord(dumperCount.getDumper_ID(),dumperCount.getBluetooth_device_ID(),"loading");
-		if(dtrans.isPresent()) {
-			dtrans.get().setLoadEndTime(dumperCount.getTimeStamp());
+	public boolean checkWithDumperShovel(DumperCount dumperCount) {
+		Optional<DumperTransaction> dtrans =dumpertransactionRepositery.checkWithDumperShovelRecord(dumperCount.getDeviceId(),dumperCount.getBle_pair_id(),"loading");
+		boolean flag=false;
+		if(dtrans.isPresent() && dumperCount.getBle_status()==0) {
+			flag=true;
+								// System.out.println(dtrans.get().getDumperId()+"-----if------");
+			dtrans.get().setLoadEndTime(dumperCount.getTime_stamp());
 			dtrans.get().setStatus("loaded");
 			dumpertransactionRepositery.save(dtrans.get());
 		}else {
+			System.out.println("-----else------");
+			Optional<DumperTransaction> dTransWT=	dumpertransactionRepositery.checkWithDumperRecordWithOutTripCompleted(dumperCount.getDeviceId());
+			if(!dTransWT.isPresent() && dumperCount.getBle_status()==1) {
+				flag=true;
 			DumperTransaction dt=new DumperTransaction();
-			dt.setDumperId(dumperCount.getDumper_ID());
-			dt.setLoadDeviceValue(dumperCount.getBluetooth_device_ID());
-			dt.setLoadStartTime(dumperCount.getTimeStamp());
+			dt.setDumperId(dumperCount.getDeviceId());
+			dt.setLoadDeviceValue(dumperCount.getBle_pair_id());
+			dt.setLoadStartTime(dumperCount.getTime_stamp());
 			dt.setStatus("loading");
 			dumpertransactionRepositery.save(dt);
+			}
 			
 		}
+		return flag;
 	}
 
 	
 	@Override
-	public void checkWithDumperUnload(DumperCount dumperCount) {
-		if(dumperCount.getStatus()==1) {
-		Optional<DumperTransaction> dtrans =dumpertransactionRepositery.checkWithDumperShovelRecord(dumperCount.getDumper_ID(),"loaded");
-		if(dtrans.isPresent()) {
-			dtrans.get().setUnloadDeviceValue(dumperCount.getBluetooth_device_ID());
-			dtrans.get().setUnloadStartTime(dumperCount.getTimeStamp());
+	public boolean checkWithDumperUnload(DumperCount dumperCount) {
+		boolean flag=false;
+		if(dumperCount.getBle_status()==1) {
+		Optional<DumperTransaction> dtrans =dumpertransactionRepositery.checkWithDumperShovelRecord(dumperCount.getDeviceId(),"loaded");
+		if(dtrans.isPresent()&& dumperCount.getBle_status()==1) {
+			dtrans.get().setUnloadDeviceValue(dumperCount.getBle_pair_id());
+			dtrans.get().setUnloadStartTime(dumperCount.getTime_stamp());
 			dtrans.get().setStatus("unloading");
 			dumpertransactionRepositery.save(dtrans.get());
+			flag=true;
 		}
 		}else {
-		Optional<DumperTransaction> dtransct =dumpertransactionRepositery.checkWithDumperUnloadRecord(dumperCount.getDumper_ID(),dumperCount.getBluetooth_device_ID(),"unloading");
-		if(dtransct.isPresent()) {
-			//dtransct.get().setDumperId(dumperCount.getDumper_ID());
-			//dtransct.get().setLoadDeviceValue(dumperCount.getBluetooth_device_ID());
-			dtransct.get().setUnloadEndTime(dumperCount.getTimeStamp());
-			dtransct.get().setStatus("TripCompleted");
-			dumpertransactionRepositery.save(dtransct.get());
-			
+			Optional<DumperTransaction> dtransct =dumpertransactionRepositery.checkWithDumperUnloadRecord(dumperCount.getDeviceId(),dumperCount.getBle_pair_id(),"unloading");
+			if(dtransct.isPresent()&& dumperCount.getBle_status()==0) {
+				//dtransct.get().setDumperId(dumperCount.getDumper_ID());
+				//dtransct.get().setLoadDeviceValue(dumperCount.getBluetooth_device_ID());
+				dtransct.get().setUnloadEndTime(dumperCount.getTime_stamp());
+				dtransct.get().setStatus("TripCompleted");
+				dumpertransactionRepositery.save(dtransct.get());
+				flag=true;
+				
+			}
 		}
-		}
+		return flag;
 		
 	}
 	
