@@ -47,6 +47,10 @@ public class DumperTransaction {
 	
 	@Column(name="status")
 	private String status;
+	
+	private Date date;
+	
+	//private int trip;
 
 	public Long getId() {
 		return id;
@@ -120,7 +124,14 @@ public class DumperTransaction {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+	
+	
 
+	public Date getDate() {
+		return date;
+	}
+
+	
 	@Override
 	public String toString() {
 		return "DumperTransaction [id=" + id + ", dumperId=" + dumperId + ", loadDeviceValue=" + loadDeviceValue

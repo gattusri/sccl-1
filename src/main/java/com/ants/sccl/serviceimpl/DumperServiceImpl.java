@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import com.ants.sccl.model.DumperCount;
 import com.ants.sccl.model.DumperData;
 import com.ants.sccl.model.DumperTransaction;
+import com.ants.sccl.projections.DumperDetailsModel;
+import com.ants.sccl.projections.DurationOfTripModel;
 import com.ants.sccl.repository.DumperRepository;
 import com.ants.sccl.repository.DumperTransactionrepositery;
 import com.ants.sccl.service.DumperService;
@@ -158,6 +160,20 @@ public class DumperServiceImpl implements DumperService {
 			}
 		}
 		return flag;
+		
+	}
+
+	public List<DumperDetailsModel> getDumperDetailsCount(Date fromDate,Date toDate) {
+		List<DumperDetailsModel> ddm=dumpertransactionRepositery.getDumperDetailsCount(fromDate, toDate);
+		return ddm;
+	}
+	
+	public List<DurationOfTripModel> getDurationOfTheTrip(Date fromDate,Date toDate){
+		//System.out.println(fromDate+"----"+toDate);
+		//List<DurationOfTripModel>  dt=(List<DurationOfTripModel>) dumpertransactionRepositery.getDurationOfTheTripDTO(fromDate,fromDate);
+		List<DurationOfTripModel>  dt1= dumpertransactionRepositery.getDurationOfTheTripDTO(fromDate,toDate);
+		//System.out.println("----"+dt1.size());
+		return dt1;
 		
 	}
 	
