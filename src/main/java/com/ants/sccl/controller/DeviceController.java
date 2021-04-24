@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.hibernate.engine.jdbc.spi.SqlExceptionHelper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +28,7 @@ import com.ants.sccl.model.DumperDetails;
 import com.ants.sccl.model.DumperTransaction;
 import com.ants.sccl.model.LiveLocation;
 import com.ants.sccl.model.UserDetails;
+import com.ants.sccl.projections.AssetTrackingModel;
 import com.ants.sccl.projections.DumperDetailsModel;
 import com.ants.sccl.projections.DurationOfTripModel;
 import com.ants.sccl.repository.AssetLocationsRepository;
@@ -162,7 +165,7 @@ public class DeviceController {
 			Optional<LiveLocation> dumperll=livelocationrepositery.checkLiveLocationExistOrNot(dumperId);
 			if(dumperll.isPresent()) {
 				//System.out.println("if condition+ ----");
-			return  ResponseEntity.status(HttpStatus.OK).body(dumperll);
+			return  ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","Dumper live location getting successfully",dumperll));
 		
 			}
 			else 	{
@@ -179,7 +182,7 @@ public class DeviceController {
 			Optional<LiveLocation> dumperll=livelocationrepositery.checkLiveLocationExistOrNot(dumperId);
 			if(dumperll.isPresent()) {
 				//System.out.println("if condition+ ----");
-			return  ResponseEntity.status(HttpStatus.OK).body(dumperll);
+			return  ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","trip getting successfully",dumperll));
 		
 			}
 			else 	{
@@ -258,17 +261,93 @@ public class DeviceController {
 	}
 	
 	/** A6 -- getting Asset information  */
-	@GetMapping("/assettracking")
+	@GetMapping("/assettrackingforui")
 	public  ResponseEntity<?>  getAssetTracking() {
 		try {
-		 assetRegisterRepository.getAssetTrackingDTO();
-			//return  ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("false","Invalid",assetsList));
-		 return null;
+		 List<AssetTrackingModel> atm=assetRegisterRepository.getAssetTrackingDTO();
+		 System.out.println(atm.get(0)+"---");
+			return  ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","asset details getting successfully",atm));
+		// return null;
 		}catch(Exception e) {
 			return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid",e));
 		}
 	}
 	
+	
+	
+
+	/** A7 -- Adding Asset  */
+	@PostMapping("/assetadding")
+	public  ResponseEntity<?>  addAsset(@RequestBody AssetRegister assetRegister) throws DataAccessException {
+		 AssetRegister ar = null;
+		try {
+		if(assetRegister!=null && assetRegister.getAssetCode().trim().length()>0) {
+		    ar =assetRegisterRepository.save(assetRegister);
+		   //return   ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","asset details added successfully",ar));
+		}
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid assset",e));
+		}
+			//ArrayList<AssetCount> assetsList=(ArrayList<AssetCount>) assetRegisterRepository.getAssetCountBasedonLocationId();
+		return   ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","asset details added successfully",ar));
+			
+	}
+	
+//	/** A8 -- update Asset status */
+//	@PostMapping("/assetupdate")
+//	public  ResponseEntity<?>  updateAsset(@RequestBody AssetRegister assetRegister) {
+//		 AssetRegister ar = null;
+//		try {
+//		
+//		    ar =assetRegisterRepository.save(assetRegister);
+//		   //return   ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","asset details added successfully",ar));
+//		
+//		}catch(Exception e) {
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid",e));
+//		}
+//			//ArrayList<AssetCount> assetsList=(ArrayList<AssetCount>) assetRegisterRepository.getAssetCountBasedonLocationId();
+//		return   ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","asset details added successfully",ar));
+//			
+//	}
+	
+	/** A8 -- view Asset based on status */
+	@PostMapping("/assetview")
+	public  ResponseEntity<?>  viewAsset(@RequestBody String status) {
+		List<AssetRegister> av =null;
+	try {
+		if(status!=null) {
+		  av =assetRegisterRepository.getAssetBasedonStatus(status);
+		   
+		} }catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid",e));
+		}
+			//ArrayList<AssetCount> assetsList=(ArrayList<AssetCount>) assetRegisterRepository.getAssetCountBasedonLocationId();
+		return   ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","asset details added successfully",av));
+			
+	}
+	
+	/** A9 -- Asset Locations */
+	@PostMapping("/assetlocationsview")
+	public  ResponseEntity<?>  viewAssetLocations() {
+		
+		  List<AssetLocations> av = assetLocationRepository.findAll();
+			//ArrayList<AssetCount> assetsList=(ArrayList<AssetCount>) assetRegisterRepository.getAssetCountBasedonLocationId();
+		return   ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","asset Locations getting successfully",av));
+			
+	}
+	/** A9 -- Asset Locations */
+	@PostMapping("/assetlocationsadding")
+	public  ResponseEntity<?>  assetLocationAdding(@RequestBody AssetLocations assetlocation) {
+		 AssetLocations al =null;
+		try {
+		 al = assetLocationRepository.save(assetlocation);
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid",e));
+		}
+			//ArrayList<AssetCount> assetsList=(ArrayList<AssetCount>) assetRegisterRepository.getAssetCountBasedonLocationId();
+		return   ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","asset Locations getting successfully",al));
+			
+	}
 	
 	
 	

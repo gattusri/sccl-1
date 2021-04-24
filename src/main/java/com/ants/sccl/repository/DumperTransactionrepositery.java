@@ -83,10 +83,12 @@ public interface DumperTransactionrepositery extends JpaRepository<DumperTransac
 			+ "(Select T2.Mapping_Id from SCCL_Demo.Dumper_Device_Mapping T2\r\n"
 			+ "where T2.Device_Id = T1.Load_Device_Value) loadDeviceValue,\r\n"
 			+ "(Select T2.Mapping_Id from SCCL_Demo.Dumper_Device_Mapping T2\r\n"
-			+ "where T2.Device_Id = T1.Unload_Device_Value) unloadDeviceValue, Date(T1.Unload_End_Time) as date ,\r\n"
-			+ "T1.Load_Start_Time as loadStartTime , T1.Unload_End_Time as unloadEndTime\r\n"
+			+ "where T2.Device_Id = T1.Unload_Device_Value) unloadDeviceValue, Date(T1.Unload_End_Time) as date,\r\n"
+			+ "T1.Load_Start_Time as loadStartTime , T1.Unload_End_Time as unloadEndTime,\r\n"
+			+ "(SELECT (TIMEDIFF((T1.Unload_End_Time),(T1.Load_Start_Time)))) as timeDiff\r\n"
 			+ "from SCCL_Demo.Dumper_Transaction T1\r\n"
-			+ "where T1.Status = 'TripCompleted' and Date(T1.Unload_End_Time) between  ?1 and ?2 \r\n"
-			+ "order by T1.Unload_End_Time desc" ,nativeQuery = true)
+			+ "where T1.Status = 'TripCompleted' and Date(T1.Unload_End_Time) between ?1 and ?2\r\n"
+			+ "order by T1.Unload_End_Time desc;\r\n"
+			+ "" ,nativeQuery = true)
 	List<DurationOfTripModel> getDurationOfTheTripDTO(Date fromDate, Date toDate);
 }

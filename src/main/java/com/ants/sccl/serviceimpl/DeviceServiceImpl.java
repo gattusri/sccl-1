@@ -76,36 +76,45 @@ public class DeviceServiceImpl implements DeviceService{
 		}
 		try {
 					Optional<LiveLocation> ll=liveLocationRepository.checkLiveLocationExistOrNot(device.getDeviceId());
-					if(ll.isPresent()) {
-						//ll.get().setDeviceId(device.getDeviceId());
-						ll.get().setLatitude(device.getLatitude());
-						ll.get().setLongitude(device.getLongitude());
-						ll.get().setTime_stamp(device.getTime_stamp());
+					//System.out.println(ll.get().toString()+"-------");
+					if(!ll.isPresent()) {
+						LiveLocation liveLocation=new LiveLocation();
+						liveLocation.setDeviceId(device.getDeviceId());
+						liveLocation.setLatitude(device.getLatitude());
+						liveLocation.setLongitude(device.getLongitude());
+						liveLocation.setTime_stamp(device.getTime_stamp());
 						//if("Dumper")
-						//ll.get().setStatus("No-data");
-						liveLocationRepository.save(ll.get());
+						liveLocation.setStatus("Loading");
+						liveLocationRepository.save(liveLocation);
 						//System.out.println(ll.get().toString()+"if condition");
 						
 					}else {
 						DeviceMapping dm=deviceMappingRepository.getOne(device.getDeviceId());
 						if(dm!=null && dm.getDeviceCategory().equalsIgnoreCase("Dumper")) {
-						LiveLocation liveLocation=new LiveLocation();
+					
 						//System.out.println(liveLocation+"else condition 1");
-					liveLocation.setDeviceId(device.getDeviceId());
-					liveLocation.setLatitude(device.getLatitude());
-					liveLocation.setLongitude(device.getLongitude());
-					liveLocation.setTime_stamp(device.getTime_stamp());
-					if(device.getBle_pair_id()=="")
-						liveLocation.setStatus("In Transist");
-					else {
-					DeviceMapping dm1=deviceMappingRepository.getOne(device.getBle_pair_id());
-					if(dm1.getDeviceCategory().equalsIgnoreCase("Shovel"))
-						liveLocation.setStatus("Loading");
-					else if(dm1.getDeviceCategory().equalsIgnoreCase("Unloading"))
-						liveLocation.setStatus("Unloading");
-				
+					//liveLocation.setDeviceId(device.getDeviceId());
+					ll.get().setLatitude(device.getLatitude());
+					ll.get().setLongitude(device.getLongitude());
+					ll.get().setTime_stamp(device.getTime_stamp());
+					
+					
+					if(device.getBle_pair_id()=="") {
+						if(ll.get().getStatus().equalsIgnoreCase("Unloading") && device.getBle_pair_id()=="") 
+							ll.get().setStatus("tripend");
+						else if(ll.get().getStatus().equalsIgnoreCase("Loading") && device.getBle_pair_id()=="") 
+							ll.get().setStatus("InTransist");
 					}
-					liveLocationRepository.save(liveLocation);	 
+					else {
+						DeviceMapping dm1=deviceMappingRepository.getOne(device.getBle_pair_id());
+						if(dm1.getDeviceCategory().equalsIgnoreCase("Shovel"))
+							ll.get().setStatus("Loading");
+						else if(dm1.getDeviceCategory().equalsIgnoreCase("Unloading"))
+							ll.get().setStatus("Unloading");
+					
+					}
+					
+					liveLocationRepository.save(ll.get());	 
 					//System.out.println(liveLocation.toString()+"else condition 2");
 						}
 					}
