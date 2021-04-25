@@ -312,13 +312,15 @@ public class DeviceController {
 	
 	/** A8 -- view Asset based on status */
 	@PostMapping("/assetview")
-	public  ResponseEntity<?>  viewAsset(@RequestBody String status) {
+	public  ResponseEntity<?>  viewAsset(@RequestBody AssetRegister assetRegister) {
 		List<AssetRegister> av =null;
 	try {
-		if(status!=null) {
-		  av =assetRegisterRepository.getAssetBasedonStatus(status);
+		if(assetRegister.getStatus()==0 || assetRegister.getStatus()==1)
+		  av =assetRegisterRepository.getAssetBasedonStatus(assetRegister.getStatus());
+		else
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid input",av));
 		   
-		} }catch(Exception e) {
+		 }catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid",e));
 		}
 			//ArrayList<AssetCount> assetsList=(ArrayList<AssetCount>) assetRegisterRepository.getAssetCountBasedonLocationId();
@@ -327,7 +329,7 @@ public class DeviceController {
 	}
 	
 	/** A9 -- Asset Locations */
-	@PostMapping("/assetlocationsview")
+	@GetMapping("/assetlocationsview")
 	public  ResponseEntity<?>  viewAssetLocations() {
 		
 		  List<AssetLocations> av = assetLocationRepository.findAll();
@@ -345,7 +347,7 @@ public class DeviceController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid",e));
 		}
 			//ArrayList<AssetCount> assetsList=(ArrayList<AssetCount>) assetRegisterRepository.getAssetCountBasedonLocationId();
-		return   ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","asset Locations getting successfully",al));
+		return   ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","asset Location saved successfully",al));
 			
 	}
 	
