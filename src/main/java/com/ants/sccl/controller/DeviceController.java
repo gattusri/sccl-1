@@ -1,6 +1,7 @@
 package com.ants.sccl.controller;
 
 import java.sql.Date;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -170,7 +171,7 @@ public class DeviceController {
 			}
 			else 	{
 				//System.out.println("else condition+ ----");
-				return  ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid DumperId",dumperll));
+				return  ResponseEntity.status(HttpStatus.NO_CONTENT).body(new MessageResponse("false","Invalid DumperId",dumperll));
 			}
 	}
 	
@@ -311,15 +312,13 @@ public class DeviceController {
 //	}
 	
 	/** A8 -- view Asset based on status */
-	@PostMapping("/assetview")
-	public  ResponseEntity<?>  viewAsset(@RequestBody AssetRegister assetRegister) {
+	@GetMapping("/assetview")
+	public  ResponseEntity<?>  viewAsset() {
 		List<AssetRegister> av =null;
 	try {
-		if(assetRegister.getStatus()==0 || assetRegister.getStatus()==1)
-		  av =assetRegisterRepository.getAssetBasedonStatus(assetRegister.getStatus());
-		else
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid input",av));
-		   
+		
+		  av =assetRegisterRepository.findAll();
+				   
 		 }catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MessageResponse("false","Invalid",e));
 		}
@@ -351,6 +350,20 @@ public class DeviceController {
 			
 	}
 	
+	@PostMapping("/useradding")
+	public ResponseEntity<?> userRegister(@RequestBody UserDetails user ){
+		UserDetails ud=null;
+		try {
+			System.out.println(Instant.now()+"---1------");
+		ud=userDetailsRepository.save(user);
+		System.out.println(Instant.now()+"----1-----");
+		}
+		catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","User Registered Successfully",e));
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","User Registered Successfully",ud));
+		
+	}
 	
 	
 	/** L1 -- Login API  */

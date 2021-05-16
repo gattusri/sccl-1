@@ -103,7 +103,7 @@ public class DeviceServiceImpl implements DeviceService{
 						if(ll.get().getStatus().equalsIgnoreCase("Unloading") && device.getBle_pair_id()=="") 
 							ll.get().setStatus("tripend");
 						else if(ll.get().getStatus().equalsIgnoreCase("Loading") && device.getBle_pair_id()=="") 
-							ll.get().setStatus("InTransist");
+							ll.get().setStatus("Transit");
 					}
 					else {
 						DeviceMapping dm1=deviceMappingRepository.getOne(device.getBle_pair_id());
