@@ -247,12 +247,12 @@ public class DeviceController {
 	}
 	
 	/** A4 getting all Avalible assets in asset Table  */
-	@GetMapping("/gettest")
-	public  ResponseEntity<?>  getAsset() {
-			List<Asset> assetList=assetRepository.getAsset();
-			//return  ResponseEntity.status(HttpStatus.OK).body(new IoTResponse(it.getStatus(),it.getIgnition_status(),it.getSw_ver()));
-			return  ResponseEntity.status(HttpStatus.OK).body(assetList);
-	}
+//	@GetMapping("/gettest")
+//	public  ResponseEntity<?>  getAsset() {
+//			List<Asset> assetList=assetRepository.getAsset();
+//			//return  ResponseEntity.status(HttpStatus.OK).body(new IoTResponse(it.getStatus(),it.getIgnition_status(),it.getSw_ver()));
+//			return  ResponseEntity.status(HttpStatus.OK).body(assetList);
+//	}
 	
 	/** A5 -- getting Asset count based on locations(rooms)  */
 	@GetMapping("/getdevicecount")
@@ -266,7 +266,7 @@ public class DeviceController {
 	public  ResponseEntity<?>  getAssetTracking() {
 		try {
 		 List<AssetTrackingModel> atm=assetRegisterRepository.getAssetTrackingDTO();
-		 System.out.println(atm.get(0)+"---");
+		// System.out.println(atm.get(0)+"---");
 			return  ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","asset details getting successfully",atm));
 		// return null;
 		}catch(Exception e) {
@@ -311,7 +311,7 @@ public class DeviceController {
 //			
 //	}
 	
-	/** A8 -- view Asset based on status */
+	/** A8 -- view Asset based */
 	@GetMapping("/assetview")
 	public  ResponseEntity<?>  viewAsset() {
 		List<AssetRegister> av =null;
@@ -327,7 +327,7 @@ public class DeviceController {
 			
 	}
 	
-	/** A9 -- Asset Locations */
+	/** A10 -- Asset Locations */
 	@GetMapping("/assetlocationsview")
 	public  ResponseEntity<?>  viewAssetLocations() {
 		
@@ -336,7 +336,7 @@ public class DeviceController {
 		return   ResponseEntity.status(HttpStatus.OK).body(new MessageResponse("true","asset Locations getting successfully",av));
 			
 	}
-	/** A9 -- Asset Locations */
+	/** A9 -- Asset Location adding */
 	@PostMapping("/assetlocationsadding")
 	public  ResponseEntity<?>  assetLocationAdding(@RequestBody AssetLocations assetlocation) {
 		 AssetLocations al =null;
