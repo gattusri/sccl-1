@@ -59,7 +59,7 @@ public interface DumperTransactionrepositery extends JpaRepository<DumperTransac
 			+ "(Select T2.Mapping_Id from SCCL_Demo.Dumper_Device_Mapping T2\r\n"
 			+ "where T2.Device_Id = T1.Unload_Device_Value) unload_device_value, T1.Load_Start_Time, T1.Unload_End_Time\r\n"
 			+ "from SCCL_Demo.Dumper_Transaction T1\r\n"
-			+ "where T1.Status = 'TripCompleted' order by T1.Unload_End_Time desc limit 5;",nativeQuery=true)
+			+ "where T1.Status = 'TripCompleted' order by T1.Unload_End_Time desc limit 15;",nativeQuery=true)
 	List<?> getRecentTrips();
 	
 	

@@ -17,8 +17,8 @@ public class SwagerConfiguration {
 	public Docket api() {
 		return new Docket(DocumentationType.SWAGGER_2).
 				select()
-				.apis(RequestHandlerSelectors.basePackage("com.ants.sccl.controller"))
-				.paths(PathSelectors.ant("/api/**"))
+				.apis(RequestHandlerSelectors.basePackage("com.ants.sccl"))
+				.paths(PathSelectors.ant("/**"))
 				.build();
 	}
 }
