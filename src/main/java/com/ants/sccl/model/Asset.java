@@ -1,6 +1,7 @@
 package com.ants.sccl.model;
 
 import java.sql.Timestamp;
+import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,15 +10,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name="`asset`")
-//@Table(name="`Asset_RFID_Raw_Data`")
 @Component
 public class Asset {
 	
@@ -48,9 +46,13 @@ public class Asset {
 	private Double longitude;
 	
 	//@DateTimeFormat(iso = ISO.DATE_TIME)
-	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	//@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name="date_time")
 	private Timestamp timeStamp;
+	
+	//private DateTim timeonw;
+	
+	
 
 	public Long getId() {
 		return id;
@@ -132,6 +134,4 @@ public class Asset {
 	}
 
 
-	
-	
 }
