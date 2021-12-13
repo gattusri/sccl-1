@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,6 +58,9 @@ public class DeviceController {
 	
 	@Autowired
 	DumperServiceImpl dumperServiceImpl;
+	
+	@Autowired
+	PasswordEncoder passwordencoder;
 	
 	
 	@Autowired
@@ -355,7 +359,8 @@ public class DeviceController {
 		UserDetails ud=null;
 		try {
 			System.out.println(Instant.now()+"---1------");
-		ud=userDetailsRepository.save(user);
+			user.setUserPassword(passwordencoder.encode(user.getUserPassword()));
+			ud=userDetailsRepository.save(user);
 		System.out.println(Instant.now()+"----1-----");
 		}
 		catch(Exception e) {

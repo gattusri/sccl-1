@@ -69,8 +69,8 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
-			<scope>optional</scope>
-		</dependency> 
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<build>

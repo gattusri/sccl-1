@@ -1,9 +1,13 @@
 package com.ants.sccl.serviceimpl;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -113,10 +117,25 @@ public class DumperServiceImpl implements DumperService {
 		boolean flag=false;
 		if(dtrans.isPresent() && dumperCount.getBle_status()==0) {
 			flag=true;
-								// System.out.println(dtrans.get().getDumperId()+"-----if------");
+			/*--------------------- time testing start ------------------------*/		
+//			Duration timeElapsed = Duration.between(dtrans.get().getLoadStartTime(), dumperCount.getTime_stamp());
+//			System.out.println("Time taken: "+ timeElapsed.toMillis() +" milliseconds");
+			
+			long difference=dumperCount.getTime_stamp().getTime()- dtrans.get().getLoadStartTime().getTime();
+			
+			System.out.println(difference+"-----time difference------");
+			
+			
+			
+			
+			
+			// System.out.println(dtrans.get().getDumperId()+"-----if------");
+			if(difference>300000) {
+				/*------------------------ time testing end ---------------------*/	
 			dtrans.get().setLoadEndTime(dumperCount.getTime_stamp());
 			dtrans.get().setStatus("loaded");
 			dumpertransactionRepositery.save(dtrans.get());
+			}
 		}else {
 			System.out.println("-----else------");
 			Optional<DumperTransaction> dTransWT=	dumpertransactionRepositery.checkWithDumperRecordWithOutTripCompleted(dumperCount.getDeviceId());
@@ -177,10 +196,23 @@ public class DumperServiceImpl implements DumperService {
 		
 	}
 	
-	
+		//------------------------ Time test---------------------------
+	public static String daysBetween(String day1, String day2) {
+	    String daysBetween = "";
+	    SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+	    try {
+	        Date date1 = myFormat.parse(day1);
+	        Date date2 = myFormat.parse(day2);
+	        long diff = date2.getTime() - date1.getTime();
+	        daysBetween = ""+(TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS));
+	    } catch (ParseException e) {
+	        e.printStackTrace();
+	    }
+	    return daysBetween;
+	}
 
 
-
-	
+	//------------------------ Time test end---------------------------
 
 }
