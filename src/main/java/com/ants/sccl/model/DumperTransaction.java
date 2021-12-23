@@ -1,8 +1,7 @@
 package com.ants.sccl.model;
 
-import java.math.BigInteger;
+
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Table(name="`Dumper_Transaction`")
 @Component
 public class DumperTransaction {
-	
+
 	@Id
 	@Column(name="`Id`")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,31 +25,30 @@ public class DumperTransaction {
 
 	@Column(name="dumper_id")
 	private String dumperId;
-	
+
 	@Column(name="load_device_value")
 	private String loadDeviceValue;
-	
+
 	@Column(name="Load_Start_time")
 	private Timestamp loadStartTime;
-	
+
 	@Column(name="Load_End_time")
 	private Timestamp loadEndTime;
-	
+
 	@Column(name="unload_device_value")
 	private String unloadDeviceValue;
-	
+
 	@Column(name="unload_start_time")
 	private Timestamp unloadStartTime;
-	
+
 	@Column(name="unload_end_time")
 	private Timestamp unloadEndTime;
-	
+
 	@Column(name="status")
 	private String status;
-	
+
 	private Date date;
-	
-	//private int trip;
+
 
 	public Long getId() {
 		return id;
@@ -83,7 +81,7 @@ public class DumperTransaction {
 	public void setLoadStartTime(Timestamp loadStartTime) {
 		this.loadStartTime = loadStartTime;
 	}
-	
+
 
 	public Timestamp getLoadEndTime() {
 		return loadEndTime;
@@ -124,14 +122,14 @@ public class DumperTransaction {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	
-	
+
+
 
 	public Date getDate() {
 		return date;
 	}
 
-	
+
 	@Override
 	public String toString() {
 		return "DumperTransaction [id=" + id + ", dumperId=" + dumperId + ", loadDeviceValue=" + loadDeviceValue
@@ -139,7 +137,7 @@ public class DumperTransaction {
 				+ unloadDeviceValue + ", unloadStartTime=" + unloadStartTime + ", unloadEndTime=" + unloadEndTime
 				+ ", status=" + status + "]";
 	}
-	
-	
-	
+
+
+
 }

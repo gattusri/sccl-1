@@ -84,6 +84,12 @@ public class DeviceRunBook {
 	public void setLatitude(String latitude) {
 		this.latitude = latitude;
 	}
+
+	@Override
+	public String toString() {
+		return "DeviceRunBook [deviceRunBookId=" + deviceRunBookId + ", device=" + device + ", startTime=" + startTime
+				+ ", endTime=" + endTime + ", longitude=" + longitude + ", latitude=" + latitude + "]";
+	}
 	
 	
 	

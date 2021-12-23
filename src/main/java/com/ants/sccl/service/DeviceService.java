@@ -4,10 +4,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
 import com.ants.sccl.model.Dashboard;
 import com.ants.sccl.model.Device;
 import com.ants.sccl.model.DumperTransaction;

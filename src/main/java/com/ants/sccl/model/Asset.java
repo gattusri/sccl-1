@@ -1,7 +1,7 @@
 package com.ants.sccl.model;
 
 import java.sql.Timestamp;
-import java.sql.Date;
+
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,8 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
 @Table(name="`asset`")
@@ -52,8 +50,6 @@ public class Asset {
 	
 	//private DateTim timeonw;
 	
-	
-
 	public Long getId() {
 		return id;
 	}

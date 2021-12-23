@@ -22,7 +22,7 @@ public class PilferageDetectionModel {
 	private long id;
 	
 	@Column(name="Device_Name")
-	private String deviceId;
+	private String deviceName;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@Column(name="Time_Stamp")
@@ -38,13 +38,20 @@ public class PilferageDetectionModel {
 	private String latitude;
 
 
-
-	public String getDeviceId() {
-		return deviceId;
+	public long getId() {
+		return id;
 	}
 
-	public void setDeviceId(String deviceId) {
-		this.deviceId = deviceId;
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getDeviceName() {
+		return deviceName;
+	}
+
+	public void setDeviceName(String deviceName) {
+		this.deviceName = deviceName;
 	}
 
 	public Timestamp getTimeStamp() {

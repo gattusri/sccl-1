@@ -2,16 +2,12 @@ package com.ants.sccl.model;
 
 import java.sql.Timestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 
 @Component
 public class DumperCount {

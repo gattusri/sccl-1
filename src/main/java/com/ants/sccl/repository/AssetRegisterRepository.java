@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import com.ants.sccl.model.AssetCount;
 import com.ants.sccl.model.AssetRegister;
 import com.ants.sccl.projections.AssetTrackingModel;
 

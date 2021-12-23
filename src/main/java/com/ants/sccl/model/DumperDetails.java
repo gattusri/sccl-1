@@ -1,7 +1,6 @@
 package com.ants.sccl.model;
 
 import java.sql.Date;
-import java.util.Arrays;
 
 public class DumperDetails {
 
