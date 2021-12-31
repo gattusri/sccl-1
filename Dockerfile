@@ -1,5 +1,5 @@
 FROM tomcat:8
 LABEL app=my-app
-COPY target/*.war /usr/local/tomcat/webapps/sample-azure-docke.war
+COPY target/*.war /usr/local/tomcat/webapps/sccl.war
 # dummy commit
 
